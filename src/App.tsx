@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Expression, RawSample } from './types'
 import { Stage, Voice, type PresenceState } from './expression'
+import { LanguageTree } from './tree'
 import { Session } from './session'
 
 // 前语言状态的基线表达:安静、微弱、缓慢呼吸。
@@ -76,5 +77,9 @@ export default function App() {
     }
   }, [session])
 
-  return <Stage expression={spoken ?? BASELINE} presence={presence} />
+  return (
+    <Stage expression={spoken ?? BASELINE} presence={presence}>
+      <LanguageTree />
+    </Stage>
+  )
 }
