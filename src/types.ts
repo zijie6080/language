@@ -60,6 +60,19 @@ export interface Symbol {
 }
 
 /**
+ * EmergenceEvent —— emergence 每次观察后向下游(mapping / memory)广播的事件。
+ * 只陈述发生了什么,不解释意味着什么:
+ *  - born       一个新模式的胚胎出现了(一个潜在的"词"诞生)
+ *  - reinforced 一个已有模式再次被观测到并被强化
+ *  - died       一个模式因长期冷落衰减归零而消亡
+ */
+export interface EmergenceEvent {
+  type: 'born' | 'reinforced' | 'died'
+  /** 相关 Symbol 的 id。died 事件发出时该 Symbol 已从活体中移除,id 供语言树记录死亡。 */
+  symbolId: string
+}
+
+/**
  * Expression —— mapping 交给 expression 层的全部渲染指令。
  * 全部是连续物理量,没有任何符号引用:expression 拿到它就能发光、能动、能响,
  * 但永远不知道自己在"说"哪个 Symbol——这就是"渲染不认识 Symbol"的落实。
