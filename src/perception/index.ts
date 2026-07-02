@@ -1,2 +1,2 @@
 // perception —— 把原始指针事件编码成定长特征向量。纯逻辑,不含像素、不含渲染、不含任何"形状名"概念。
-export {};
+export { GestureEncoder } from './GestureEncoder'
