@@ -10,4 +10,5 @@ body,
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
+  cursor: none; /* 黑暗里没有箭头。你的存在是一粒微光(见 App 的 cursor dot)。 */
 }

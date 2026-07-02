@@ -153,7 +153,8 @@ void main() {
   light *= mix(0.55, 1.0, uConfidence);
   light *= 1.0 + 0.12 * uArousal;
 
-  vec3 col = hsl2rgb(vec3(fract(uHue), mix(0.30, 0.55, uConfidence), 0.58));
+  // 临场时色温极轻微地移动:它注意到你了,但不明说。
+  vec3 col = hsl2rgb(vec3(fract(uHue + 0.03 * uArousal), mix(0.30, 0.55, uConfidence), 0.58));
   vec3 outCol = col * light * uBrightness * uAwake * 1.6;
 
   gl_FragColor = vec4(outCol, 1.0);
