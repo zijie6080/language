@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Expression, RawSample } from './types'
-import { Stage, type PresenceState } from './expression'
+import { Stage, Voice, type PresenceState } from './expression'
 import { Session } from './session'
 
 // 前语言状态的基线表达:安静、微弱、缓慢呼吸。
@@ -29,6 +29,7 @@ const toSample = (ev: PointerEvent): RawSample => ({
 
 export default function App() {
   const session = useMemo(() => new Session(), [])
+  const voice = useMemo(() => new Voice(), [])
   const presence = useRef<PresenceState>({ x: 0.5, y: 0.5, down: false })
   const [spoken, setSpoken] = useState<Expression | null>(null)
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -36,6 +37,7 @@ export default function App() {
   useEffect(() => {
     const down = (ev: PointerEvent) => {
       presence.current = { x: ev.clientX / window.innerWidth, y: ev.clientY / window.innerHeight, down: true }
+      void voice.wake(BASELINE) // 声音只能由第一次触碰唤醒(浏览器如此,倒也像一种仪式)
       session.begin(toSample(ev))
     }
     const move = (ev: PointerEvent) => {
@@ -50,8 +52,9 @@ export default function App() {
       presence.current = { ...presence.current, down: false }
       const utterance = session.end(toSample(ev))
       if (utterance !== null) {
-        // 它开口说这句话;说完,慢慢退回沉默的呼吸。
+        // 它开口说这句话;说完,慢慢退回沉默的呼吸。光与声共用同一句话。
         setSpoken(utterance.expression)
+        voice.speak(utterance.expression, utterance.holdMs)
         if (fadeTimer.current !== null) clearTimeout(fadeTimer.current)
         fadeTimer.current = setTimeout(() => setSpoken(null), utterance.holdMs)
       }
