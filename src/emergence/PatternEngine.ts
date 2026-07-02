@@ -100,6 +100,16 @@ export class PatternEngine {
     return events
   }
 
+  /**
+   * 时间流逝但无话可说:只推进衰减与死亡,不做匹配。
+   * 给编排层在沉默期定时调用——遗忘不需要新的话语来触发。
+   */
+  tick(t: number): EmergenceEvent[] {
+    const events: EmergenceEvent[] = []
+    this.decayTo(t, events)
+    return events
+  }
+
   /** 活体 Symbol 的深拷贝快照。返回副本而非引用:下游只许读,不许反向偷改引擎状态。 */
   snapshot(): Symbol[] {
     return [...this.nodes.values()].map((n) => ({ ...n, centroid: [...n.centroid] }))

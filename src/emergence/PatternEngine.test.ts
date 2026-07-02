@@ -112,6 +112,16 @@ describe('PatternEngine 生命法则', () => {
     expect(events).toEqual([{ type: 'reinforced', symbolId: id }])
   })
 
+  it('tick:沉默期只推进遗忘,不诞生也不强化', () => {
+    const eng = new PatternEngine()
+    const id = eng.observe(jittered(A, 0, 9))[0].symbolId
+    expect(eng.tick(10_000)).toEqual([]) // 还活着,无事发生
+    expect(eng.get(id)).toBeDefined()
+    const events = eng.tick(1_000_000) // 漫长的沉默
+    expect(events).toEqual([{ type: 'died', symbolId: id }])
+    expect(eng.snapshot()).toHaveLength(0)
+  })
+
   it('快照是深拷贝:篡改快照不影响引擎(单向数据流)', () => {
     const eng = new PatternEngine()
     const id = eng.observe({ vec: [...A], t: 0 })[0].symbolId
